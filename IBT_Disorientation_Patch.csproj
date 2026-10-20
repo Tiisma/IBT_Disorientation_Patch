@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>IBM_Disorientation_Patch</AssemblyName>
     <RootNamespace>IBM_Disorientation_Patch</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>1.1.0</Version>
     <GamePath Condition="'$(GamePath)' == ''">$(VINTAGE_STORY)</GamePath>
     <GameApiPath Condition="'$(GameApiPath)' == ''">$(GamePath)/VintagestoryAPI.dll</GameApiPath>
     <GameEssentialsPath Condition="'$(GameEssentialsPath)' == ''">$(GamePath)/Mods/VSEssentials.dll</GameEssentialsPath>
@@ -42,7 +42,7 @@
   <Target Name="Package" AfterTargets="Build">
     <RemoveDir Directories="$(PackageDirectory)" />
     <MakeDir Directories="$(PackageDirectory)" />
-    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json"
+    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json;$(MSBuildProjectDirectory)/modicon.png"
           DestinationFolder="$(PackageDirectory)" />
     <ZipDirectory SourceDirectory="$(PackageDirectory)"
                   DestinationFile="$(PackageFile)"
