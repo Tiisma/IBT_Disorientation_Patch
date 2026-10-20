@@ -2,7 +2,7 @@
   "type": "code",
   "modid": "ibm_disorientation_patch",
   "name": "IBT Disorientation Compatibility Patch",
-  "authors": ["Tisma"],
+  "authors": ["Tiisma"],
   "description": "Fixes crash from Disorientation mod when used with IBT.",
   "version": "1.1.0",
   "requiredOnClient": true,
