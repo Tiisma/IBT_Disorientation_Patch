@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Target chosen for Stratum v1.22.7-stratum.2; real DLLs still require verification. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>IBM_Disorientation_Patch</AssemblyName>
+    <RootNamespace>IBM_Disorientation_Patch</RootNamespace>
+    <Version>0.1.0</Version>
+    <GamePath Condition="'$(GamePath)' == ''">$(VINTAGE_STORY)</GamePath>
+    <GameApiPath Condition="'$(GameApiPath)' == ''">$(GamePath)/VintagestoryAPI.dll</GameApiPath>
+    <GameEssentialsPath Condition="'$(GameEssentialsPath)' == ''">$(GamePath)/Mods/VSEssentials.dll</GameEssentialsPath>
+    <GameHarmonyPath Condition="'$(GameHarmonyPath)' == ''">$(GamePath)/Lib/0Harmony.dll</GameHarmonyPath>
+    <PackageDirectory>$(MSBuildProjectDirectory)/dist/package</PackageDirectory>
+    <PackageFile>$(MSBuildProjectDirectory)/dist/ibm_disorientation_patch_1.22_$(Version).zip</PackageFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(GameApiPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VSEssentials">
+      <HintPath>$(GameEssentialsPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(GameHarmonyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="ValidateGameReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameApiPath)')"
+           Text="VintagestoryAPI.dll introuvable. Fournir -p:GamePath=/chemin/installation ou -p:GameApiPath=/chemin/VintagestoryAPI.dll." />
+    <Error Condition="!Exists('$(GameEssentialsPath)')"
+           Text="VSEssentials.dll introuvable. Vérifier GamePath/Mods ou fournir -p:GameEssentialsPath=/chemin/VSEssentials.dll." />
+    <Error Condition="!Exists('$(GameHarmonyPath)')"
+           Text="0Harmony.dll introuvable. Vérifier GamePath/Lib ou fournir -p:GameHarmonyPath=/chemin/0Harmony.dll." />
+  </Target>
+
+  <Target Name="Package" AfterTargets="Build">
+    <RemoveDir Directories="$(PackageDirectory)" />
+    <MakeDir Directories="$(PackageDirectory)" />
+    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json"
+          DestinationFolder="$(PackageDirectory)" />
+    <ZipDirectory SourceDirectory="$(PackageDirectory)"
+                  DestinationFile="$(PackageFile)"
+                  Overwrite="true" />
+    <Message Importance="high" Text="Archive du mod : $(PackageFile)" />
+  </Target>
+</Project>

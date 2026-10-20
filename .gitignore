@@ -1,0 +1,14 @@
+# .NET build output
+bin/
+obj/
+dist/
+
+# Local Python environment
+.venv/
+venv/
+
+# IDE and user-specific files
+.vs/
+.idea/
+*.user
+*.suo
