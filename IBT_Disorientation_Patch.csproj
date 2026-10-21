@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!-- Target chosen for Stratum v1.22.7-stratum.2; real DLLs still require verification. -->
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>IBM_Disorientation_Patch</AssemblyName>
     <RootNamespace>IBM_Disorientation_Patch</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <GamePath Condition="'$(GamePath)' == ''">$(VINTAGE_STORY)</GamePath>
     <GameApiPath Condition="'$(GameApiPath)' == ''">$(GamePath)/VintagestoryAPI.dll</GameApiPath>
     <GameEssentialsPath Condition="'$(GameEssentialsPath)' == ''">$(GamePath)/Mods/VSEssentials.dll</GameEssentialsPath>

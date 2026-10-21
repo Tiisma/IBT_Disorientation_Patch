@@ -2,7 +2,7 @@
 
 A small compatibility patch for **Immersive Body Temperature (IBT)** and **Disorientation** in Vintage Story. It prevents a crash associated with IBT's player-stats GUI when both mods are used together.
 
-The patch is applied on the client. It skips IBT's `PlayerStatRenderer.Compose` and `PlayerStatRenderer.UpdateFeltTemperature` methods; the mod does not replace either mod's gameplay systems.
+The patch is applied on the client. It skips IBT's `PlayerStatRenderer.UpdateFeltTemperature` method; the mod does not replace either mod's gameplay systems.
 
 ## Requirements
 

@@ -1,71 +1,64 @@
-using System;
-using System.Reflection;
 using HarmonyLib;
-using Vintagestory.API.Common;
 using Vintagestory.API.Client;
+using Vintagestory.API.Common;
 
 namespace IBTDisorientationCompat;
 
 public class IBTDisorientationCompatModSystem : ModSystem
 {
-    private static readonly string[] MethodsToPatch =
-    {
-        "Compose",
-        "UpdateFeltTemperature"
-    };
+    private const string HarmonyId = "ibt.disorientation.compat";
+    private const string LogPrefix = "[IBT Disorientation Compat]";
 
     private Harmony? harmony;
 
     public override void StartClientSide(ICoreClientAPI api)
     {
-        harmony = new Harmony("ibt.disorientation.compat");
-
-        Type? rendererType = AccessTools.TypeByName(
+        var rendererType = AccessTools.TypeByName(
             "VS_ImmersiveBodyTemperature.GUI.PlayerStatRenderer"
         );
 
         if (rendererType == null)
         {
             api.Logger.Warning(
-                "[IBT Disorientation Compat] PlayerStatRenderer was not found. " +
+                $"{LogPrefix} PlayerStatRenderer was not found. " +
                 "Immersive Body Temperature may not be installed."
             );
             return;
         }
 
-        MethodInfo prefix = AccessTools.Method(
-            typeof(IBTDisorientationCompatModSystem),
-            nameof(SkipIBTPlayerStatsGUI)
+
+        var original = AccessTools.Method(
+            rendererType,
+            "UpdateFeltTemperature"
         );
 
-        foreach (string methodName in MethodsToPatch)
+        if (original == null)
         {
-            MethodInfo? original = AccessTools.Method(rendererType, methodName);
-
-            if (original == null)
-            {
-                api.Logger.Warning(
-                    $"[IBT Disorientation Compat] Could not find {methodName}."
-                );
-                continue;
-            }
-
-            harmony.Patch(original, prefix: new HarmonyMethod(prefix));
+            api.Logger.Warning(
+                $"{LogPrefix} Could not find UpdateFeltTemperature."
+            );
+            return;
         }
 
+        harmony = new Harmony(HarmonyId);
+        harmony.Patch(
+            original,
+            prefix: new HarmonyMethod(
+                typeof(IBTDisorientationCompatModSystem),
+                nameof(SkipFeltTemperatureUpdate)
+            )
+        );
+
         api.Logger.Notification(
-            "[IBT Disorientation Compat] Compatibility patches applied."
+            $"{LogPrefix} Compatibility patches applied."
         );
     }
 
-    private static bool SkipIBTPlayerStatsGUI()
-    {
-        return false;
-    }
+    private static bool SkipFeltTemperatureUpdate() => false;
 
     public override void Dispose()
     {
-        harmony?.UnpatchAll("ibt.disorientation.compat");
+        harmony?.UnpatchAll(HarmonyId);
         base.Dispose();
     }
 }
