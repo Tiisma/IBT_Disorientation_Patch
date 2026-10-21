@@ -41,7 +41,7 @@
   <Target Name="Package" AfterTargets="Build">
     <RemoveDir Directories="$(PackageDirectory)" />
     <MakeDir Directories="$(PackageDirectory)" />
-    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json;$(MSBuildProjectDirectory)/modicon.png"
+    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)/modinfo.json;$(MSBuildProjectDirectory)/modicon.png;$(MSBuildProjectDirectory)/LICENSE"
           DestinationFolder="$(PackageDirectory)" />
     <ZipDirectory SourceDirectory="$(PackageDirectory)"
                   DestinationFile="$(PackageFile)"

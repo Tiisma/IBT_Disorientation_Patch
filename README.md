@@ -45,19 +45,19 @@ The project can also be built directly with `dotnet build`; successful builds au
 
 ## Publish a GitHub release
 
-Releases are published automatically when a version tag matching `v*` is pushed (for example, `v1.1.0`). The workflow builds the mod and attaches the ZIP from `dist` to a GitHub Release.
+Releases are published automatically when a version tag matching `v*` is pushed (for example, `v1.2.0`). The workflow builds the mod and attaches the ZIP from `dist` to a GitHub Release.
 
 Because the build references Vintage Story DLLs that are not included in this repository, the workflow requires a Windows self-hosted GitHub Actions runner on a machine with Vintage Story installed. Register the runner for this repository with the `self-hosted`, `windows`, and `x64` labels, then define the repository Actions variable `VINTAGE_STORY` as the game's installation directory on that runner. The runner account must be able to read that directory.
 
 Once the runner is online, publish a release by pushing a tag:
 
 ```powershell
-git tag v1.1.0
-git push origin v1.1.0
+git tag v1.2.0
+git push origin v1.2.0
 ```
 
 For later releases, update the version in both `modinfo.json` and the project file before creating and pushing the matching tag.
 
 ## License
 
-No license file is currently included in this repository. All rights are reserved unless the author specifies otherwise.
+This project is licensed under the [MIT License](./LICENSE).
