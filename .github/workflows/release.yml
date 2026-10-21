@@ -1,0 +1,83 @@
+name: Build and publish release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: [self-hosted, windows, x64]
+    env:
+      VINTAGE_STORY: ${{ vars.VINTAGE_STORY }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build mod package
+        shell: pwsh
+        run: .\build.ps1
+
+      - name: Create GitHub release and upload mod ZIP
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+            const dist = path.join(process.env.GITHUB_WORKSPACE, "dist");
+            const tag = context.ref.replace("refs/tags/", "");
+            const version = tag.replace(/^v/, "");
+            const archiveName = `ibm_disorientation_patch_1.22_${version}.zip`;
+
+            if (!fs.existsSync(path.join(dist, archiveName))) {
+              throw new Error(`Expected mod ZIP not found: ${path.join(dist, archiveName)}`);
+            }
+
+            let release;
+
+            try {
+              release = (await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag
+              })).data;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              release = (await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: tag,
+                generate_release_notes: true
+              })).data;
+            }
+
+            const existingAsset = release.assets.find(asset => asset.name === archiveName);
+            if (existingAsset) {
+              await github.rest.repos.deleteReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                asset_id: existingAsset.id
+              });
+            }
+
+            const archivePath = path.join(dist, archiveName);
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              name: archiveName,
+              data: fs.readFileSync(archivePath),
+              headers: {
+                "content-type": "application/zip",
+                "content-length": fs.statSync(archivePath).size
+              }
+            });

@@ -1,0 +1,21 @@
+# .NET build output
+bin/
+obj/
+.vs/
+
+# Packaged mod output
+dist/
+
+# Local Python environments and tooling
+.venv/
+__pycache__/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Operating system files
+.DS_Store
+Thumbs.db
